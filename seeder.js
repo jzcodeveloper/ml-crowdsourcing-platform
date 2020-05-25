@@ -66,7 +66,6 @@ const admins = JSON.parse(
 const contributors = JSON.parse(
   fs.readFileSync(`${__dirname}/_data/contributors.json`, "utf-8")
 );
-
 // Import into DB
 const importData = async () => {
   try {
