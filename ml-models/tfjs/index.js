@@ -170,8 +170,8 @@ class Model {
     });
 
     // Get the weights of the model [0] = kernel [1] = bias
-    /* this._model.layers[0].getWeights()[0].print();
-    this._model.layers[0].getWeights()[1].print(); */
+    this._model.layers[0].getWeights()[0].print();
+    this._model.layers[0].getWeights()[1].print();
 
     // Model should be saved in this line
     await this._model.save(`file://${file}`);

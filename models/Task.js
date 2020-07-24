@@ -12,7 +12,7 @@ const Question = require("./Question");
 const TaskSchema = new mongoose.Schema({
   id: {
     type: Number,
-    unique: true
+    unique: true,
   },
 
   title: {
@@ -20,103 +20,113 @@ const TaskSchema = new mongoose.Schema({
     required: [true, "Please add a title"],
     unique: true,
     trim: true,
-    maxlength: [50, "Title can not be more than 50 characters"]
+    maxlength: [50, "Title can not be more than 50 characters"],
   },
 
   description: {
     type: String,
     required: [true, "Please add a description"],
-    maxlength: [500, "Description can not be more than 500 characters"]
+    maxlength: [500, "Description can not be more than 500 characters"],
   },
 
   steps: {
-    type: [String],
-    required: [true, "Please add some steps"],
-    trim: true,
-    maxlength: [100, "Step can not be more than 100 characters"]
+    type: [
+      {
+        type: String,
+        default: "1) Lea atentamente cada una de las preguntas.",
+      },
+      {
+        type: String,
+        default: "2) Lea atentamente cada una de las posibles respuestas.",
+      },
+      {
+        type: String,
+        default: "3) Responda de forma honesta y objetiva.",
+      },
+    ],
   },
 
   tips: {
     type: [String],
     required: [true, "Please add some tips"],
     trim: true,
-    maxlength: [200, "Tip can not be more than 200 characters"]
+    maxlength: [200, "Tip can not be more than 200 characters"],
   },
 
   questions: [
     {
       type: mongoose.Schema.ObjectId,
-      ref: "Question"
-    }
+      ref: "Question",
+    },
   ],
 
   dataset: {
     type: mongoose.Schema.ObjectId,
-    ref: "Dataset"
+    ref: "Dataset",
   },
 
   totalQuestions: {
     type: Number,
-    default: 0
+    default: 0,
   },
 
   timesCompleted: {
     type: Number,
-    default: 0
+    default: 0,
   },
 
   averageTime: {
     type: Number,
-    default: 0
+    default: 0,
   },
 
   maxTasks: {
     type: Number,
-    default: 1
+    default: 1,
   },
 
   tasksActivity: [
     {
       date: Date,
-      total: { type: Number, default: 0 }
-    }
+      total: { type: Number, default: 0 },
+    },
   ],
 
   history: [
     {
       contributor: {
         type: mongoose.Schema.ObjectId,
-        ref: "Contributor"
+        ref: "Contributor",
       },
       date: Date,
       totalTasks: { type: Number, default: 0 },
       totalQuestions: { type: Number, default: 0 },
-      totalTime: { type: Number, default: 0 }
-    }
+      totalTime: { type: Number, default: 0 },
+    },
   ],
 
   admin: {
     type: mongoose.Schema.ObjectId,
-    ref: "Admin"
+    ref: "Admin",
   },
 
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
 
   enabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
 
   testOnly: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-TaskSchema.methods.updateGlobalStats = async function() {
+TaskSchema.methods.updateGlobalStats = async function () {
   this.timesCompleted += 1;
   this.averageTime = await Data.getAverageTime(this._id);
   this.tasksActivity[this.tasksActivity.length - 1].total += 1;
@@ -124,9 +134,9 @@ TaskSchema.methods.updateGlobalStats = async function() {
   return await this.save();
 };
 
-TaskSchema.methods.updateHistory = async function(data) {
+TaskSchema.methods.updateHistory = async function (data) {
   const index = this.history.findIndex(
-    record => record.contributor.toString() === data.contributor.toString()
+    (record) => record.contributor.toString() === data.contributor.toString()
   );
 
   if (index > -1) {
@@ -140,37 +150,37 @@ TaskSchema.methods.updateHistory = async function(data) {
   return await this.save();
 };
 
-TaskSchema.pre("find", async function(next) {
+TaskSchema.pre("find", async function (next) {
   this.populate("questions");
   next();
 });
 
-TaskSchema.pre("findOne", async function(next) {
+TaskSchema.pre("findOne", async function (next) {
   this.populate("questions");
   next();
 });
 
-TaskSchema.pre("findOneAndUpdate", async function(next) {
+TaskSchema.pre("findOneAndUpdate", async function (next) {
   this.populate("questions");
   next();
 });
 
-TaskSchema.post("find", async function(doc, next) {
+TaskSchema.post("find", async function (doc, next) {
   const keys = ["tasksActivity"];
   return await updateActivities(doc, next, keys);
 });
 
-TaskSchema.post("findOne", async function(doc, next) {
+TaskSchema.post("findOne", async function (doc, next) {
   const keys = ["tasksActivity"];
   return await updateActivities(doc, next, keys);
 });
 
-TaskSchema.pre("save", async function(next) {
+TaskSchema.pre("save", async function (next) {
   this.wasNew = this.isNew;
   next();
 });
 
-TaskSchema.post("save", async function(doc, next) {
+TaskSchema.post("save", async function (doc, next) {
   if (!this.wasNew) return next();
 
   // Update global stats
@@ -185,7 +195,7 @@ TaskSchema.post("save", async function(doc, next) {
   return await doc.save();
 });
 
-TaskSchema.post("findOneAndDelete", async function(doc, next) {
+TaskSchema.post("findOneAndDelete", async function (doc, next) {
   // Remove questions
   await Question.deleteMany({ _id: doc.questions });
 
