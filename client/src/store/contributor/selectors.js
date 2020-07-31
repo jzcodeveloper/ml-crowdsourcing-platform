@@ -114,5 +114,5 @@ export const canContinueWorking = (task) =>
     const { totalTasks } = history[index];
     const { maxTasks } = task;
 
-    return maxTasks >= totalTasks;
+    return maxTasks > totalTasks;
   });

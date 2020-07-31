@@ -47,7 +47,4 @@ Tab.defaultProps = {
   items: [],
 };
 
-const areEqual = (prevProps, nextProps) =>
-  isEqual(prevProps.title, nextProps.title);
-
-export default React.memo(Tab, areEqual);
+export default Tab;

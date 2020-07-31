@@ -180,6 +180,11 @@ const Form = ({ show, hide, id }) => {
         });
         return acc;
       }, []),
+      steps: [
+        "Lea atentamente cada una de las preguntas.",
+        "Lea atentamente cada una de las posibles respuestas.",
+        "Responda de forma honesta y objetiva",
+      ],
       tips: tips.map((tip) => tip.value),
       testOnly: testOnly,
     };

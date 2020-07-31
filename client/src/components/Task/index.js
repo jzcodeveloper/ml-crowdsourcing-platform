@@ -63,14 +63,16 @@ const Task = ({ match }) => {
 
     const keys = Object.keys(state);
 
-    if (task) isValid = keys.length === task.questions.length;
+    if (task) {
+      isValid = keys.length === task.questions.length;
+    }
 
     return isValid;
   };
 
   const onChange = useCallback((e) => {
     const { name, value } = e.target;
-    setState({ ...state, [name]: value });
+    setState((prev) => ({ ...prev, [name]: value }));
   }, []);
 
   const onSubmit = (e) => {
