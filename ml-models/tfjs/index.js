@@ -13,7 +13,6 @@ class Model {
     batchSize,
     learningRate,
     labels,
-    file,
   }) {
     this._model = tf.sequential();
 
@@ -174,7 +173,7 @@ class Model {
     this._model.layers[0].getWeights()[1].print();
 
     // Model should be saved in this line
-    await this._model.save(`file://${file}`);
+    await this._model.save(`file://${model.file}`);
 
     return training;
   }
@@ -182,7 +181,7 @@ class Model {
   // Testing
   async testModel(model) {
     // Model should be loaded in this line
-    await tf.loadLayersModel(`file://${file}/model.json`);
+    await tf.loadLayersModel(`file://${model.file}/model.json`);
 
     const { dataset } = model;
 
