@@ -1,7 +1,8 @@
 import socketIOClient from "socket.io-client";
 
-/* const endpoint = "http://localhost:5000"; */
-
-const endpoint = "https://ml-crowdsourcing-platform.herokuapp.com";
+const endpoint =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000"
+    : "https://ml-crowdsourcing-platform.herokuapp.com";
 
 export const socket = socketIOClient(endpoint);
